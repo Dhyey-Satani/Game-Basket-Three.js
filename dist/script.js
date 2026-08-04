@@ -55,6 +55,20 @@ const CHALLENGES = [
   { type: "make",    target: 9, label: "Score 9 baskets" },
 ];
 
+// Basketball skins (procedurally drawn, no external assets)
+const SKINS = [
+  { id: "classic",  name: "Classic",  base: "#e07b39", dark: "#c05f24", highlight: "#f5a34c", accent: "#ffd9a8", seam: "rgba(40,20,10,0.95)", pattern: "seams" },
+  { id: "sunset",   name: "Sunset",   base: "#ff5e3a", dark: "#b0230a", highlight: "#ffb45e", accent: "#ffd23f", seam: "rgba(90,20,5,0.95)",  pattern: "flame" },
+  { id: "gold",     name: "Gold",     base: "#f0b429", dark: "#a97408", highlight: "#ffe08a", accent: "#fff3c4", seam: "rgba(120,70,0,0.9)", pattern: "star" },
+  { id: "ocean",    name: "Ocean",    base: "#2f9bff", dark: "#0a3d6e", highlight: "#7fd0ff", accent: "#c4e9ff", seam: "rgba(5,40,80,0.95)",  pattern: "rings" },
+  { id: "venom",    name: "Venom",    base: "#35c95f", dark: "#0c5c26", highlight: "#a4ffbe", accent: "#c9ffdb", seam: "rgba(5,70,30,0.9)",   pattern: "stripes" },
+  { id: "midnight", name: "Midnight", base: "#5a5a8f", dark: "#1a1a3a", highlight: "#c9c9ff", accent: "#9fe8ff", seam: "rgba(20,20,60,0.95)", pattern: "galaxy" },
+];
+
+function getSkin() {
+  return SKINS.find((s) => s.id === settings.ballSkin) || SKINS[0];
+}
+
 // ============================================================
 // STATE
 // ============================================================
@@ -98,10 +112,12 @@ const settings = {
   musicOn: true,
   bloomOn: true,
   aimGuide: true,
+  ballSkin: "classic",
 };
 
 const HS_KEY = "basketball_arena_highscores_v1";
 const SET_KEY = "basketball_arena_settings_v1";
+const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function loadSettings() {
   try {
@@ -530,6 +546,7 @@ function spawnFireTrail(pos) {
 
 // Camera shake
 function addShake(amount) {
+  if (REDUCED_MOTION) return;
   state.shake = Math.min(1.2, state.shake + amount);
 }
 
@@ -570,17 +587,8 @@ function spawnFloatText(text, cls, worldPos, sub) {
 // ============================================================
 // CANVAS TEXTURES
 // ============================================================
-function makeBallTexture() {
-  const c = document.createElement("canvas");
-  c.width = c.height = 512;
-  const g = c.getContext("2d");
-  const grad = g.createRadialGradient(200, 190, 40, 256, 256, 330);
-  grad.addColorStop(0, "#f5a34c");
-  grad.addColorStop(0.55, "#e07b39");
-  grad.addColorStop(1, "#c05f24");
-  g.fillStyle = grad;
-  g.fillRect(0, 0, 512, 512);
-  g.strokeStyle = "rgba(40,20,10,0.95)";
+function drawSeams(g, seam) {
+  g.strokeStyle = seam;
   g.lineWidth = 9;
   // equator
   g.beginPath(); g.moveTo(0, 256); g.lineTo(512, 256); g.stroke();
@@ -593,9 +601,111 @@ function makeBallTexture() {
   g.lineWidth = 6;
   g.beginPath(); g.arc(256, 256, 200, -0.55, 0.55); g.stroke();
   g.beginPath(); g.arc(256, 256, 200, Math.PI - 0.55, Math.PI + 0.55); g.stroke();
+}
+
+function drawStarShape(cx, cy, spikes, outerR, innerR) {
+  let rot = (Math.PI / 2) * 3;
+  const step = Math.PI / spikes;
+  const p = new Path2D();
+  p.moveTo(cx, cy - outerR);
+  for (let i = 0; i < spikes; i++) {
+    let x = cx + Math.cos(rot) * outerR;
+    let y = cy + Math.sin(rot) * outerR;
+    p.lineTo(x, y);
+    rot += step;
+    x = cx + Math.cos(rot) * innerR;
+    y = cy + Math.sin(rot) * innerR;
+    p.lineTo(x, y);
+    rot += step;
+  }
+  p.closePath();
+  return p;
+}
+
+function makeBallTexture(skin) {
+  const s = skin || SKINS[0];
+  const c = document.createElement("canvas");
+  c.width = c.height = 512;
+  const g = c.getContext("2d");
+  const grad = g.createRadialGradient(200, 190, 40, 256, 256, 330);
+  grad.addColorStop(0, s.highlight);
+  grad.addColorStop(0.55, s.base);
+  grad.addColorStop(1, s.dark);
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 512, 512);
+
+  if (s.pattern === "galaxy") {
+    for (let i = 0; i < 130; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const r = 20 + Math.random() * 210;
+      g.fillStyle = "rgba(255,255,255," + (0.15 + Math.random() * 0.7).toFixed(2) + ")";
+      const rs = Math.random() * 2.5 + 0.5;
+      g.fillRect(256 + Math.cos(a) * r, 256 + Math.sin(a) * r, rs, rs);
+    }
+  } else if (s.pattern === "flame") {
+    for (let i = 0; i < 10; i++) {
+      const a = (i / 10) * Math.PI * 2;
+      const x = 256 + Math.cos(a) * 140;
+      const y = 256 + Math.sin(a) * 140;
+      const gr = g.createRadialGradient(x, y, 2, x, y, 62);
+      gr.addColorStop(0, s.accent);
+      gr.addColorStop(1, "rgba(255,61,0,0)");
+      g.fillStyle = gr;
+      g.beginPath(); g.arc(x, y, 62, 0, Math.PI * 2); g.fill();
+    }
+  } else if (s.pattern === "rings") {
+    for (let r = 46; r < 262; r += 34) {
+      g.strokeStyle = s.accent;
+      g.lineWidth = 6;
+      g.globalAlpha = 0.6;
+      g.beginPath(); g.arc(256, 256, r, 0, Math.PI * 2); g.stroke();
+    }
+    g.globalAlpha = 1;
+  } else if (s.pattern === "star") {
+    g.fillStyle = s.accent;
+    g.globalAlpha = 0.9;
+    g.fill(drawStarShape(256, 256, 5, 150, 62));
+    g.globalAlpha = 1;
+  } else if (s.pattern === "stripes") {
+    const w = 58;
+    for (let i = -8; i < 9; i++) {
+      g.fillStyle = i % 2 ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.14)";
+      g.beginPath();
+      g.moveTo(i * w, 0); g.lineTo((i + 1) * w, 0);
+      g.lineTo(i * w, 512); g.lineTo((i - 1) * w, 512);
+      g.closePath(); g.fill();
+    }
+  }
+
+  drawSeams(g, s.seam);
   const tex = new THREE.CanvasTexture(c);
   tex.anisotropy = 4;
   return tex;
+}
+
+function applyBallSkin() {
+  ballTexture = makeBallTexture(getSkin());
+  if (ballMaterial) {
+    ballMaterial.map = ballTexture;
+    ballMaterial.needsUpdate = true;
+  }
+}
+
+function drawSkinPreview(cv, skin) {
+  const g = cv.getContext("2d");
+  const cx = cv.width / 2, cy = cv.height / 2, R = 44;
+  g.clearRect(0, 0, cv.width, cv.height);
+  const grad = g.createRadialGradient(cx - 10, cy - 10, 6, cx, cy, R);
+  grad.addColorStop(0, skin.highlight);
+  grad.addColorStop(0.6, skin.base);
+  grad.addColorStop(1, skin.dark);
+  g.fillStyle = grad;
+  g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.fill();
+  g.strokeStyle = skin.seam;
+  g.lineWidth = 5;
+  g.beginPath(); g.moveTo(cx - R, cy); g.lineTo(cx + R, cy); g.stroke();
+  g.beginPath(); g.arc(cx, cy, R * 0.6, -0.6, 0.6); g.stroke();
+  g.beginPath(); g.arc(cx, cy, R * 0.6, Math.PI - 0.6, Math.PI + 0.6); g.stroke();
 }
 
 function makeWoodFloorTexture() {
@@ -1180,7 +1290,7 @@ function updateMovingHoop(dtReal, nowMs) {
 // ============================================================
 function createBallVisual() {
   // Cache texture + material for performance (shared across balls)
-  if (!ballTexture) ballTexture = makeBallTexture();
+  if (!ballTexture) ballTexture = makeBallTexture(getSkin());
   if (!ballMaterial) {
     ballMaterial = new THREE.MeshStandardMaterial({ map: ballTexture, roughness: 0.5, metalness: 0.02, envMapIntensity: 0.6 });
   }
@@ -1448,8 +1558,9 @@ function hideAim() {
 function updatePowerMeter(power) {
   const wrap = document.getElementById("power-wrap");
   wrap.classList.remove("hidden");
-  document.getElementById("power-fill").style.width = (power * 100) + "%";
-  document.getElementById("power-fill").style.filter = power > 0.85 ? "brightness(1.4)" : "none";
+  const fill = document.getElementById("power-fill");
+  fill.style.transform = "scaleX(" + Math.max(0, Math.min(1, power)) + ")";
+  fill.style.filter = power > 0.85 ? "brightness(1.4)" : "none";
 }
 
 // ============================================================
@@ -1635,7 +1746,7 @@ function scoreBasket(ball) {
   }
 
   // Slow motion on perfect shot
-  if (perfect) {
+  if (perfect && !REDUCED_MOTION) {
     state.slowTarget = 0.25;
     setTimeout(() => { state.slowTarget = 1; }, 350);
   }
@@ -1773,6 +1884,12 @@ function startMode(mode) {
   }
   clearTimeout(state.resetTimerId);
 
+  // Reset input drag state
+  isDragging = false;
+  hideAim();
+  document.body.style.cursor = "default";
+  controls.enabled = false;
+
   // Rebuild hoop with mode ring scale
   destroyHoop();
   createHoop(RING_RADIUS * cfg.ringScale);
@@ -1852,7 +1969,7 @@ function pauseGame() {
   AudioSys.stopMusic();
   AudioSys.click();
   document.getElementById("pause-score").textContent = "SCORE: " + state.score;
-  document.getElementById("overlay-pause").classList.remove("hidden");
+  openOverlay("overlay-pause", $("btn-resume"));
   hideAim();
 }
 
@@ -1862,6 +1979,7 @@ function resumeGame() {
   document.getElementById("overlay-pause").classList.add("hidden");
   AudioSys.click();
   AudioSys.startMusic();
+  restoreFocus();
 }
 
 function quitToMenu() {
@@ -1905,8 +2023,18 @@ function finishGame(title) {
   document.getElementById("go-banks").textContent = state.banks;
   document.getElementById("go-fire").textContent = state.fireTimes;
 
+  // Screen-reader announcement of final results
+  const live = document.getElementById("gameover-live");
+  if (live) {
+    live.textContent =
+      "Game over. Final score " + state.score +
+      (isRecord ? ", a new record. " : ". ") +
+      state.makes + " baskets out of " + state.shots + " shots, " + acc + "% accuracy.";
+  }
+
   renderLeaderboard(mode, document.getElementById("gameover-leaderboard"));
   showScreen("overlay-gameover");
+  $("btn-replay").focus();
 }
 
 // ============================================================
@@ -1962,7 +2090,6 @@ function renderMenuLeaderboard() {
     if (list.length === 0) continue;
     const wrap = document.createElement("div");
     wrap.className = "leaderboard";
-    wrap.style.marginTop = "14px";
     const title = document.createElement("h3");
     title.textContent = MODES[m].name;
     wrap.appendChild(title);
@@ -1987,6 +2114,55 @@ function renderMenuLeaderboard() {
 // ============================================================
 const $ = (id) => document.getElementById(id);
 
+let lastFocusedEl = null;
+
+function focusFirstFocusable(container) {
+  const selectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+  const els = container.querySelectorAll(selectors);
+  for (const el of els) {
+    if (el.offsetParent !== null || el.getClientRects().length > 0) {
+      el.focus();
+      return;
+    }
+  }
+}
+
+function openOverlay(id, focusTarget) {
+  lastFocusedEl = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+  document.querySelectorAll(".overlay").forEach((o) => o.classList.add("hidden"));
+  const overlay = document.getElementById(id);
+  overlay.classList.remove("hidden");
+  if (focusTarget) focusTarget.focus();
+  else focusFirstFocusable(overlay.querySelector(".panel") || overlay);
+  return overlay;
+}
+
+function restoreFocus() {
+  if (lastFocusedEl && lastFocusedEl.isConnected && document.contains(lastFocusedEl)) {
+    lastFocusedEl.focus();
+  }
+}
+
+function trapFocus(e) {
+  if (e.key !== "Tab") return;
+  const overlay = Array.from(document.querySelectorAll(".overlay"))
+    .find((o) => !o.classList.contains("hidden"));
+  if (!overlay) return;
+  const selectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+  const focusables = Array.from(overlay.querySelectorAll(selectors))
+    .filter((el) => el.offsetParent !== null || el.getClientRects().length > 0);
+  if (focusables.length === 0) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (e.shiftKey && (document.activeElement === first || document.activeElement === document.body)) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+
 function showScreen(name) {
   document.querySelectorAll(".overlay").forEach((o) => o.classList.add("hidden"));
   document.getElementById("hud").classList.toggle("hidden", name === "overlay-menu");
@@ -1996,25 +2172,28 @@ function showScreen(name) {
   }
 }
 
-function showMenuScreens() {
+function showMenuScreens(focusOnShow = true) {
   document.querySelectorAll(".overlay").forEach((o) => o.classList.add("hidden"));
   document.getElementById("overlay-menu").classList.remove("hidden");
   document.getElementById("hud").classList.add("hidden");
+  if (focusOnShow) focusFirstFocusable($("overlay-menu").querySelector(".panel"));
 }
 
 function updateScoreUI() {
   const el = $("scoreboard");
   el.textContent = state.score;
-  el.classList.remove("bump");
-  void el.offsetWidth;
-  el.classList.add("bump");
+  if (!REDUCED_MOTION) {
+    el.classList.remove("bump");
+    void el.offsetWidth;
+    el.classList.add("bump");
+  }
 }
 
 function updateComboUI() {
   const wrap = $("combo-wrap");
   const mult = comboMultiplier(state.streak);
   $("combo-value").textContent = "x" + mult;
-  $("combo-fill").style.width = (mult / 5) * 100 + "%";
+  $("combo-fill").style.transform = "scaleX(" + mult / 5 + ")";
   wrap.classList.toggle("fire", state.fire);
 }
 
@@ -2035,23 +2214,34 @@ function updateStatsUI() {
   $("stat-acc").textContent = acc + "%";
 }
 
+const timerCache = { text: "", frac: -1, low: null };
 function updateTimerUI() {
   const cfg = MODES[state.mode];
   const wrap = $("timer-wrap");
-  let display, frac;
+  let display, frac, low;
   if (cfg.time > 0) {
     const t = Math.max(0, Math.ceil(state.timeLeft));
     display = "0:" + String(t).padStart(2, "0");
     frac = Math.max(0, Math.min(1, state.timeLeft / cfg.time));
-    wrap.classList.toggle("low", state.timeLeft <= 10);
+    low = state.timeLeft <= 10;
   } else {
     const s = Math.floor(state.elapsed);
     display = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
     frac = 1;
-    wrap.classList.remove("low");
+    low = false;
   }
-  $("timer-text").textContent = display;
-  $("timer-fill").style.width = (frac * 100) + "%";
+  if (display !== timerCache.text) {
+    $("timer-text").textContent = display;
+    timerCache.text = display;
+  }
+  if (Math.abs(frac - timerCache.frac) > 0.002) {
+    $("timer-fill").style.transform = "scaleX(" + frac + ")";
+    timerCache.frac = frac;
+  }
+  if (low !== timerCache.low) {
+    wrap.classList.toggle("low", low);
+    timerCache.low = low;
+  }
 }
 
 function updateChallengeUI(progress, target) {
@@ -2061,7 +2251,7 @@ function updateChallengeUI(progress, target) {
   const t = target !== undefined ? target : obj.target;
   const p = Math.min(t, progress || 0);
   $("challenge-text").textContent = (state.challengeIndex + 1) + "/" + CHALLENGES.length + "  " + obj.label;
-  $("challenge-progress-fill").style.width = (p / t) * 100 + "%";
+  $("challenge-progress-fill").style.transform = "scaleX(" + p / t + ")";
 }
 
 function showPraise(mult, perfect, bank) {
@@ -2226,7 +2416,7 @@ function animate() {
 
   // Crowd animation
   if (crowdInstances) {
-    const dummy = new THREE.Object3D();
+    const dummy = crowdDummy;
     const crowd = crowdInstances;
     const t = nowMs * 0.001;
     for (let i = 0; i < crowd.count; i++) {
@@ -2248,6 +2438,7 @@ function animate() {
 }
 
 let crowdInstances = null;
+const crowdDummy = new THREE.Object3D();
 
 // ============================================================
 // POST-PROCESSING (bloom)
@@ -2308,22 +2499,19 @@ function bindUI() {
   $("btn-view-leaderboard").addEventListener("click", () => {
     AudioSys.click();
     renderMenuLeaderboard();
-    document.getElementById("overlay-menu").classList.add("hidden");
-    document.getElementById("overlay-leaderboard").classList.remove("hidden");
+    openOverlay("overlay-leaderboard", $("btn-close-lb"));
   });
   $("btn-close-lb").addEventListener("click", () => {
     AudioSys.click();
-    document.getElementById("overlay-leaderboard").classList.add("hidden");
-    document.getElementById("overlay-menu").classList.remove("hidden");
+    $("overlay-leaderboard").classList.add("hidden");
+    showMenuScreens(false);
+    restoreFocus();
   });
 
   // Settings
   $("btn-close-settings").addEventListener("click", () => {
     AudioSys.click();
-    saveSettings();
-    document.getElementById("overlay-settings").classList.add("hidden");
-    if (state.screen === "paused") document.getElementById("overlay-pause").classList.remove("hidden");
-    else showMenuScreens();
+    closeSettings();
   });
   $("btn-reset-scores").addEventListener("click", () => {
     AudioSys.click();
@@ -2332,15 +2520,19 @@ function bindUI() {
   });
 
   // Toggles
-  $("set-sfx").addEventListener("change", (e) => { settings.sfxOn = e.target.checked; AudioSys.applyGains(); });
+  $("set-sfx").addEventListener("change", (e) => { settings.sfxOn = e.target.checked; AudioSys.applyGains(); saveSettings(); });
   $("set-music").addEventListener("change", (e) => {
     settings.musicOn = e.target.checked;
     AudioSys.applyGains();
     if (!settings.musicOn) AudioSys.stopMusic();
     else if (state.screen === "playing") AudioSys.startMusic();
+    saveSettings();
   });
-  $("set-bloom").addEventListener("change", (e) => { settings.bloomOn = e.target.checked; });
-  $("set-guide").addEventListener("change", (e) => { settings.aimGuide = e.target.checked; });
+  $("set-bloom").addEventListener("change", (e) => { settings.bloomOn = e.target.checked; saveSettings(); });
+  $("set-guide").addEventListener("change", (e) => { settings.aimGuide = e.target.checked; saveSettings(); });
+
+  // Ball skin picker
+  buildSkinPicker();
 
   // Game over
   $("btn-replay").addEventListener("click", () => { AudioSys.click(); startMode(state.mode); });
@@ -2348,13 +2540,31 @@ function bindUI() {
 
   // Keyboard
   window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" || e.key === "p" || e.key === "P") {
-      if (state.screen === "playing") pauseGame();
-      else if (state.screen === "paused") resumeGame();
+    const settingsOpen = !$("overlay-settings").classList.contains("hidden");
+    const lbOpen = !$("overlay-leaderboard").classList.contains("hidden");
+    const k = e.key;
+    if (k === "Escape" || k === "p" || k === "P") {
+      if (settingsOpen) {
+        closeSettings();
+      } else if (lbOpen) {
+        $("overlay-leaderboard").classList.add("hidden");
+        showMenuScreens(false);
+        restoreFocus();
+      } else if (state.screen === "playing") {
+        pauseGame();
+      } else if (state.screen === "paused") {
+        resumeGame();
+      }
     }
-    if ((e.key === "r" || e.key === "R") && (state.screen === "playing" || state.screen === "paused")) {
+    if ((k === "r" || k === "R") && (state.screen === "playing" || state.screen === "paused")) {
       startMode(state.mode);
     }
+  });
+
+  // Fullscreen button state
+  $("btn-fullscreen").setAttribute("aria-pressed", "false");
+  document.addEventListener("fullscreenchange", () => {
+    $("btn-fullscreen").setAttribute("aria-pressed", document.fullscreenElement ? "true" : "false");
   });
 
   // Use capture phase so we disable OrbitControls before it can rotate on touch
@@ -2363,6 +2573,9 @@ function bindUI() {
   window.addEventListener("pointerup", onPointerUp);
   window.addEventListener("resize", onResize);
   window.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  // Keep Tab focus inside the active modal overlay
+  document.addEventListener("keydown", trapFocus, true);
 }
 
 function openSettings() {
@@ -2370,8 +2583,18 @@ function openSettings() {
   $("set-music").checked = settings.musicOn;
   $("set-bloom").checked = settings.bloomOn;
   $("set-guide").checked = settings.aimGuide;
-  document.querySelectorAll(".overlay").forEach((o) => o.classList.add("hidden"));
-  document.getElementById("overlay-settings").classList.remove("hidden");
+  openOverlay("overlay-settings");
+}
+
+function closeSettings() {
+  saveSettings();
+  $("overlay-settings").classList.add("hidden");
+  if (state.screen === "paused") {
+    $("overlay-pause").classList.remove("hidden");
+    $("btn-resume").focus();
+  } else {
+    showMenuScreens();
+  }
 }
 
 function toggleFullscreen() {
@@ -2379,11 +2602,46 @@ function toggleFullscreen() {
   else document.documentElement.requestFullscreen().catch(() => {});
 }
 
+function buildSkinPicker() {
+  const picker = $("skin-picker");
+  if (!picker) return;
+  picker.innerHTML = "";
+  SKINS.forEach((skin) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "skin-swatch" + (settings.ballSkin === skin.id ? " selected" : "");
+    btn.title = skin.name;
+    btn.setAttribute("aria-label", "Ball skin " + skin.name);
+    btn.setAttribute("aria-pressed", settings.ballSkin === skin.id ? "true" : "false");
+    const cv = document.createElement("canvas");
+    cv.width = cv.height = 96;
+    drawSkinPreview(cv, skin);
+    const name = document.createElement("span");
+    name.className = "skin-name";
+    name.textContent = skin.name;
+    btn.appendChild(cv);
+    btn.appendChild(name);
+    btn.addEventListener("click", () => {
+      AudioSys.click();
+      settings.ballSkin = skin.id;
+      saveSettings();
+      applyBallSkin();
+      picker.querySelectorAll(".skin-swatch").forEach((b) => {
+        const sel = b === btn;
+        b.classList.toggle("selected", sel);
+        b.setAttribute("aria-pressed", sel ? "true" : "false");
+      });
+    });
+    picker.appendChild(btn);
+  });
+}
+
 // ============================================================
 // INIT
 // ============================================================
 function init() {
   loadSettings();
+  applyBallSkin();
   initPhysics();
   initScene();
   createArena();
@@ -2404,7 +2662,9 @@ function init() {
   });
 
   bindUI();
-  showMenuScreens();
+  renderer.domElement.setAttribute("role", "application");
+  renderer.domElement.setAttribute("aria-label", "Basketball arena game. Drag the ball downward and release to shoot.");
+  showMenuScreens(false);
   $("menu-best").textContent = "BEST: " + getBestOverall();
   updateMenuLeaderboardPreview();
   drawScoreboard(scoreboardMesh.userData.scoreCtx, 0, 60, "READY");
