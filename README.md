@@ -1,1 +1,227 @@
-# Game - Basket -  Three.js
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Basketball Arena - an arcade basketball game with game modes, combos, bonuses, and a dynamic 3D arena.">
+  <meta name="theme-color" content="#0a0d16">
+  <title>Basketball Arena - Arcade</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+  <!-- FX layer (decorative) -->
+  <div id="fx-layer" aria-hidden="true">
+    <div id="flash"></div>
+    <div id="vignette"></div>
+    <div id="pulse-glow"></div>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div id="hud-top">
+      <div id="mode-label">ARCADE</div>
+      <div id="score-wrap">
+        <div id="scoreboard" aria-live="polite" aria-atomic="true">0</div>
+        <div id="score-label">SCORE</div>
+      </div>
+      <div id="timer-wrap">
+        <div id="timer-text" aria-live="polite" aria-atomic="true">0:60</div>
+        <div id="timer-bar"><div id="timer-fill"></div></div>
+      </div>
+    </div>
+
+    <div id="combo-wrap">
+      <div id="combo-label">COMBO</div>
+      <div id="combo-value" aria-live="polite">x1</div>
+      <div id="combo-bar"><div id="combo-fill"></div></div>
+    </div>
+
+    <div id="fire-indicator" class="hidden" aria-hidden="true">
+      <div class="fire-name">FIRE MODE</div>
+      <div class="fire-sub">5x MULTIPLIER</div>
+    </div>
+
+    <div id="stats-mini">
+      <span>SHOTS <b id="stat-shots">0</b></span>
+      <span>MAKES <b id="stat-makes">0</b></span>
+      <span>MISS <b id="stat-miss">0</b></span>
+      <span>ACC <b id="stat-acc">--%</b></span>
+    </div>
+
+    <div id="challenge-box" class="hidden" aria-hidden="true">
+      <div id="challenge-title">CHALLENGE</div>
+      <div id="challenge-text"></div>
+      <div id="challenge-progress"><div id="challenge-progress-fill"></div></div>
+    </div>
+
+    <div id="power-wrap" class="hidden" aria-hidden="true">
+      <div id="power-label">POWER</div>
+      <div id="power-bar"><div id="power-fill"></div></div>
+    </div>
+
+    <div id="hud-buttons">
+      <button type="button" id="btn-pause" class="hud-btn" title="Pause" aria-label="Pause game">II</button>
+      <button type="button" id="btn-restart" class="hud-btn" title="Restart" aria-label="Restart game">R</button>
+      <button type="button" id="btn-settings" class="hud-btn" title="Settings" aria-label="Open settings">S</button>
+      <button type="button" id="btn-fullscreen" class="hud-btn" title="Fullscreen" aria-label="Toggle fullscreen">F</button>
+    </div>
+  </div>
+
+  <!-- Praise / popup messages (decorative) -->
+  <div id="score-msg" aria-hidden="true"></div>
+  <div id="float-layer" aria-hidden="true"></div>
+
+  <!-- MENU -->
+  <div id="overlay-menu" class="overlay">
+    <div class="panel">
+      <h1 id="menu-title" class="game-title"><span class="t1">BASKETBALL</span> <span class="t2">ARENA</span></h1>
+      <p class="game-subtitle">ARCADE HOOPS - TAP A MODE TO PLAY</p>
+      <div class="mode-grid">
+        <button type="button" class="mode-btn" data-mode="arcade">
+          <div class="mb-name">ARCADE</div>
+          <div class="mb-desc">Score max points in 60 seconds</div>
+        </button>
+        <button type="button" class="mode-btn" data-mode="timeattack">
+          <div class="mb-name">TIME ATTACK</div>
+          <div class="mb-desc">Every basket adds 5 seconds</div>
+        </button>
+        <button type="button" class="mode-btn" data-mode="moving">
+          <div class="mb-name">MOVING HOOP</div>
+          <div class="mb-desc">Hit the moving target</div>
+        </button>
+        <button type="button" class="mode-btn" data-mode="trickshot">
+          <div class="mb-name">TRICK SHOT</div>
+          <div class="mb-desc">Only swishes and banks count</div>
+        </button>
+        <button type="button" class="mode-btn" data-mode="challenge">
+          <div class="mb-name">CHALLENGE</div>
+          <div class="mb-desc">Complete 10 objectives</div>
+        </button>
+        <button type="button" class="mode-btn hot" data-mode="hard">
+          <div class="mb-name">HARD MODE</div>
+          <div class="mb-desc">Small ring, moving hoop, no guide</div>
+        </button>
+        <button type="button" class="mode-btn" data-mode="practice">
+          <div class="mb-name">PRACTICE</div>
+          <div class="mb-desc">No timer, free shooting</div>
+        </button>
+      </div>
+      <div class="btn-row">
+        <button type="button" id="btn-open-settings" class="btn ghost">SETTINGS</button>
+        <button type="button" id="btn-view-leaderboard" class="btn ghost">LEADERBOARD</button>
+      </div>
+      <div id="menu-best" class="menu-best"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="overlay-settings" class="overlay hidden">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <h2 id="settings-title" class="game-title title-sm"><span class="t2">SETTINGS</span></h2>
+      <div class="settings-body">
+        <div class="setting-row">
+          <div class="setting-label">Sound Effects<small>Swish, bounce, rim, crowd</small></div>
+          <label class="toggle"><input type="checkbox" id="set-sfx" checked aria-label="Sound effects on or off"><span class="slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Background Music<small>Arcade loop</small></div>
+          <label class="toggle"><input type="checkbox" id="set-music" checked aria-label="Background music on or off"><span class="slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Bloom Effect<small>Glow post-processing</small></div>
+          <label class="toggle"><input type="checkbox" id="set-bloom" checked aria-label="Bloom glow effect on or off"><span class="slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Aiming Guide<small>Trajectory prediction</small></div>
+          <label class="toggle"><input type="checkbox" id="set-guide" checked aria-label="Aiming guide on or off"><span class="slider"></span></label>
+        </div>
+        <div class="skin-block">
+          <div class="setting-label">Ball Skin<small>Choose your ball design</small></div>
+          <div id="skin-picker" class="skin-picker"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Reset High Scores<small>Clear all leaderboards</small></div>
+          <button type="button" id="btn-reset-scores" class="btn ghost btn-sm">RESET</button>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" id="btn-close-settings" class="btn cyan">DONE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAUSE -->
+  <div id="overlay-pause" class="overlay hidden">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+      <h2 id="pause-title" class="game-title title-md"><span class="t1">PAUSED</span></h2>
+      <div id="pause-score" class="pause-score"></div>
+      <div class="btn-row">
+        <button type="button" id="btn-resume" class="btn">RESUME</button>
+        <button type="button" id="btn-pause-restart" class="btn cyan">RESTART</button>
+        <button type="button" id="btn-quit" class="btn ghost">QUIT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME OVER -->
+  <div id="overlay-gameover" class="overlay hidden">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="gameover-title">
+      <h2 id="gameover-title">GAME OVER</h2>
+      <div id="gameover-score">0</div>
+      <div id="new-record" class="hidden">NEW HIGH SCORE</div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="sv" id="go-best-streak">0</div><div class="sl">BEST STREAK</div></div>
+        <div class="stat-card"><div class="sv" id="go-makes">0</div><div class="sl">MAKES</div></div>
+        <div class="stat-card"><div class="sv" id="go-misses">0</div><div class="sl">MISSES</div></div>
+        <div class="stat-card"><div class="sv" id="go-accuracy">0%</div><div class="sl">ACCURACY</div></div>
+        <div class="stat-card"><div class="sv" id="go-perfects">0</div><div class="sl">PERFECTS</div></div>
+        <div class="stat-card"><div class="sv" id="go-banks">0</div><div class="sl">BANKS</div></div>
+        <div class="stat-card"><div class="sv" id="go-fire">0</div><div class="sl">FIRE MODES</div></div>
+      </div>
+      <div id="gameover-live" class="visually-hidden" aria-live="polite"></div>
+      <div id="gameover-leaderboard" class="leaderboard">
+        <h3>LEADERBOARD</h3>
+      </div>
+      <div class="btn-row">
+        <button type="button" id="btn-replay" class="btn">PLAY AGAIN</button>
+        <button type="button" id="btn-back-menu" class="btn ghost">MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD (menu) -->
+  <div id="overlay-leaderboard" class="overlay hidden">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+      <h2 id="lb-title" class="game-title title-ml"><span class="t2">LEADERBOARD</span></h2>
+      <div id="menu-leaderboard-body"></div>
+      <div class="btn-row">
+        <button type="button" id="btn-close-lb" class="btn cyan">BACK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN (visual; beeps announced via audio) -->
+  <div id="overlay-countdown" class="overlay hidden" aria-hidden="true">
+    <div id="countdown-num">3</div>
+  </div>
+
+  <script src="./vendor/three.min.js"></script>
+  <script src="./vendor/OrbitControls.js"></script>
+  <script src="./vendor/cannon.min.js"></script>
+  <script src="./vendor/Pass.js"></script>
+  <script src="./vendor/MaskPass.js"></script>
+  <script src="./vendor/CopyShader.js"></script>
+  <script src="./vendor/LuminosityHighPassShader.js"></script>
+  <script src="./vendor/ShaderPass.js"></script>
+  <script src="./vendor/RenderPass.js"></script>
+  <script src="./vendor/UnrealBloomPass.js"></script>
+  <script src="./vendor/EffectComposer.js"></script>
+  <script src="./vendor/RoomEnvironment.js"></script>
+  <script src="./script.js"></script>
+
+</body>
+
+</html>
