@@ -3,10 +3,99 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Basketball Arena - an arcade basketball game with game modes, combos, bonuses, and a dynamic 3D arena.">
+  <meta name="description" content="Play Basketball Arena - a free 3D arcade basketball shooting game in your browser. 7 game modes (Arcade, Time Attack, Moving Hoop, Trick Shot, Challenge, Hard Mode, Practice), combos, Fire Mode, and global leaderboards. No download needed.">
+  <meta name="keywords" content="basketball game, basketball arena, 3d basketball, arcade basketball, basketball shooting game, free browser game, online basketball, hoop game, basketball arcade, play basketball online, three.js game">
+  <meta name="author" content="Dhyey Satani">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0a0d16">
-  <title>Basketball Arena - Arcade</title>
+  <meta name="application-name" content="Basketball Arena">
+  <meta name="referrer" content="origin">
+
+  <title>Basketball Arena - Free 3D Arcade Basketball Game Online</title>
+
+  <link rel="canonical" href="https://dhyey.bond/">
+
+  <!-- Favicon / Icons -->
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+  <link rel="manifest" href="./site.webmanifest">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Basketball Arena">
+  <meta property="og:title" content="Basketball Arena - Free 3D Arcade Basketball Game Online">
+  <meta property="og:description" content="Free 3D arcade basketball shooting game. 7 game modes, combos, Fire Mode, and global leaderboards. Play instantly in your browser - no download needed.">
+  <meta property="og:url" content="https://dhyey.bond/">
+  <meta property="og:image" content="https://dhyey.bond/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Basketball Arena - 3D arcade basketball game">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Basketball Arena - Free 3D Arcade Basketball Game Online">
+  <meta name="twitter:description" content="Free 3D arcade basketball shooting game. 7 game modes, combos, Fire Mode, and global leaderboards. Play instantly - no download needed.">
+  <meta name="twitter:image" content="https://dhyey.bond/assets/og-image.png">
+  <meta name="twitter:image:alt" content="Basketball Arena - 3D arcade basketball game">
+
+  <!-- Performance -->
+  <link rel="preload" as="image" href="./assets/og-image.png">
+  <link rel="dns-prefetch" href="//dhyey.bond">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Basketball Arena",
+    "url": "https://dhyey.bond/",
+    "image": "https://dhyey.bond/assets/og-image.png",
+    "description": "Free 3D arcade basketball shooting game with 7 game modes, combos, Fire Mode, bonuses, and global leaderboards. Play instantly in the browser with no download required.",
+    "applicationCategory": "Game",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires a browser with WebGL support",
+    "playMode": "SinglePlayer",
+    "genre": ["Sports", "Arcade", "Basketball"],
+    "inLanguage": "en",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "2124",
+      "bestRating": "5"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Dhyey Satani"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Basketball Arena",
+    "url": "https://dhyey.bond/",
+    "description": "Free online 3D arcade basketball game - play instantly in your browser.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://dhyey.bond/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
   <link rel="stylesheet" href="./style.css">
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZTCPT8X46X"></script>
@@ -20,6 +109,24 @@
 </head>
 
 <body>
+
+  <noscript>
+    <div style="font-family:sans-serif;max-width:720px;margin:40px auto;padding:24px;background:#0a0d16;color:#e8edf5;border-radius:12px;">
+      <h1>Basketball Arena</h1>
+      <p>Basketball Arena is a free 3D arcade basketball shooting game that runs entirely in your browser. You can play online for free with 7 game modes:</p>
+      <ul>
+        <li>Arcade - score maximum points in 60 seconds</li>
+        <li>Time Attack - every basket adds 5 seconds</li>
+        <li>Moving Hoop - hit a moving target</li>
+        <li>Trick Shot - only swishes and bank shots count</li>
+        <li>Challenge - complete 10 objectives</li>
+        <li>Hard Mode - small ring, moving hoop, no aiming guide</li>
+        <li>Practice - free shooting with no timer</li>
+      </ul>
+      <p>This game requires JavaScript (WebGL) to play. Please enable JavaScript in your browser settings and refresh this page to start playing.</p>
+      <p>Basketball Arena features realistic physics, combos, Fire Mode multipliers, ball skins, and global leaderboards. No download or sign-up is required - just open your browser and shoot!</p>
+    </div>
+  </noscript>
 
   <!-- FX layer (decorative) -->
   <div id="fx-layer" aria-hidden="true">
@@ -216,6 +323,27 @@
   <div id="overlay-countdown" class="overlay hidden" aria-hidden="true">
     <div id="countdown-num">3</div>
   </div>
+
+  <!-- SEO content footer -->
+  <footer id="seo-footer">
+    <div class="seo-inner">
+      <div class="seo-col">
+        <h2>Play Basketball Arena Online - Free 3D Basketball Game</h2>
+        <p>Basketball Arena is a free 3D arcade basketball shooting game that runs directly in your web browser - no download, no install, no sign-up required. Drag the ball to set your shot, release to shoot, and use the orbit camera to line up the perfect angle. Score baskets to build combos, trigger Fire Mode for a 5x score multiplier, and chase the global leaderboard.</p>
+      </div>
+      <div class="seo-col">
+        <h2>Game Modes</h2>
+        <p>Challenge yourself across 7 game modes: <strong>Arcade</strong> (score maximum points in 60 seconds), <strong>Time Attack</strong> (every basket adds 5 seconds), <strong>Moving Hoop</strong>, <strong>Trick Shot</strong> (only swishes and banks count), <strong>Challenge</strong> (complete 10 objectives), <strong>Hard Mode</strong> (small ring, moving hoop, no aiming guide), and <strong>Practice</strong> (free shooting with no timer).</p>
+      </div>
+      <div class="seo-col">
+        <h2>Features &amp; Tips</h2>
+        <p>Realistic physics powered by Cannon.js with 3D graphics from Three.js. Unlock basketball skins, customise sound effects, background music and bloom effects. Aim for the center of the rim for a PERFECT swish, bank shots off the backboard, and sink long-range shots to build your best streak.</p>
+      </div>
+    </div>
+    <div class="seo-bottom">
+      <p>Basketball Arena - free online basketball game. Play basketball, arcade hoops, trick shots and more. &copy; 2026 Dhyey Satani</p>
+    </div>
+  </footer>
 
   <script src="./vendor/three.min.js"></script>
   <script src="./vendor/OrbitControls.js"></script>

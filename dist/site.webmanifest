@@ -1,0 +1,26 @@
+{
+  "name": "Basketball Arena - Free 3D Arcade Basketball Game",
+  "short_name": "Basketball Arena",
+  "description": "Free 3D arcade basketball shooting game. 7 game modes, combos, Fire Mode, and global leaderboards. Play instantly in your browser - no download needed.",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0a0d16",
+  "theme_color": "#0a0d16",
+  "lang": "en",
+  "categories": ["games", "sports", "entertainment"],
+  "icons": [
+    {
+      "src": "/assets/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
