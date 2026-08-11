@@ -110,13 +110,13 @@ const state = {
 const settings = {
   sfxOn: true,
   musicOn: true,
-  bloomOn: true,
+  bloomOn: false,
   aimGuide: true,
   ballSkin: "classic",
 };
 
 const HS_KEY = "basketball_arena_highscores_v1";
-const SET_KEY = "basketball_arena_settings_v1";
+const SET_KEY = "basketball_arena_settings_v2";
 const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function loadSettings() {
