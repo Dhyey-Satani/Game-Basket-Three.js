@@ -2625,7 +2625,8 @@ function closeSettings() {
     $("overlay-pause").classList.remove("hidden");
     $("btn-resume").focus();
   } else {
-    showMenuScreens();
+    showMenuScreens(false);
+    restoreFocus();
   }
 }
 
