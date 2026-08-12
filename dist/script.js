@@ -1875,11 +1875,13 @@ function startMode(mode) {
   for (const b of activeBalls.slice()) {
     scene.remove(b.mesh);
     world.removeBody(b.body);
+    disposeBallVisual(b.mesh);
   }
   activeBalls.length = 0;
   if (currentBall) {
     scene.remove(currentBall.mesh);
     world.removeBody(currentBall.body);
+    disposeBallVisual(currentBall.mesh);
     currentBall = null;
   }
   clearTimeout(state.resetTimerId);
@@ -1914,9 +1916,37 @@ function startMode(mode) {
   startCountdown();
 }
 
+function disposeHoopVisual() {
+  if (hoop.group) {
+    hoop.group.traverse((child) => {
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) {
+        if (Array.isArray(child.material)) child.material.forEach((m) => m.dispose());
+        else child.material.dispose();
+      }
+    });
+  }
+  if (hoop.netMesh) {
+    if (hoop.netGeo) hoop.netGeo.dispose();
+    if (hoop.netMesh.material) hoop.netMesh.material.dispose();
+  }
+}
+
+function disposeBallVisual(mesh) {
+  if (!mesh) return;
+  mesh.traverse((child) => {
+    if (child.geometry) child.geometry.dispose();
+    if (child.material && child.material !== ballMaterial) {
+      if (Array.isArray(child.material)) child.material.forEach((m) => m.dispose());
+      else child.material.dispose();
+    }
+  });
+}
+
 function destroyHoop() {
   if (hoop.group) {
     scene.remove(hoop.group);
+    disposeHoopVisual();
     hoop.group = null;
   }
   if (hoop.netMesh) { scene.remove(hoop.netMesh); hoop.netMesh = null; }
@@ -2385,6 +2415,7 @@ function animate() {
     if (remove) {
       scene.remove(b.mesh);
       world.removeBody(b.body);
+      disposeBallVisual(b.mesh);
       activeBalls.splice(i, 1);
     }
   }
@@ -2394,6 +2425,7 @@ function animate() {
     const old = activeBalls.shift();
     scene.remove(old.mesh);
     world.removeBody(old.body);
+    disposeBallVisual(old.mesh);
   }
 
   if (state.screen === "playing") {
