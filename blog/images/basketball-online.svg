@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="How to play online basketball guide">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1322"/>
+      <stop offset="1" stop-color="#0a0d16"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.62">
+      <stop offset="0" stop-color="#ff7a18" stop-opacity="0.55"/>
+      <stop offset="0.55" stop-color="#ff7a18" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#ff7a18" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ball" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff8a3d"/>
+      <stop offset="0.5" stop-color="#ff7a18"/>
+      <stop offset="1" stop-color="#e2500a"/>
+    </linearGradient>
+    <linearGradient id="seam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5c3a1e"/>
+      <stop offset="1" stop-color="#3d2613"/>
+    </linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <circle cx="600" cy="305" r="215" fill="#000" opacity="0.28" filter="url(#soft)"/>
+  <circle cx="600" cy="305" r="195" fill="url(#ball)" stroke="#ffd7ad" stroke-opacity="0.35" stroke-width="2"/>
+  <circle cx="600" cy="305" r="195" fill="none" stroke="#000" stroke-opacity="0.12" stroke-width="10"/>
+  <ellipse cx="600" cy="305" rx="195" ry="72" fill="none" stroke="#5c3a1e" stroke-width="6" opacity="0.9"/>
+  <path d="M600 110 A220 220 0 0 0 600 500" fill="none" stroke="#5c3a1e" stroke-width="6" opacity="0.9"/>
+  <path d="M600 110 A220 220 0 0 1 600 500" fill="none" stroke="#5c3a1e" stroke-width="6" opacity="0.9"/>
+  <path d="M405 305 A220 220 0 0 1 795 305" fill="none" stroke="#5c3a1e" stroke-width="6" opacity="0.9"/>
+  <path d="M405 305 A220 220 0 0 0 795 305" fill="none" stroke="#5c3a1e" stroke-width="6" opacity="0.9"/>
+
+  <g>
+    <path d="M300 545 L430 410" stroke="#3a4358" stroke-width="16" stroke-linecap="round"/>
+    <ellipse cx="452" cy="388" rx="118" ry="34" fill="none" stroke="#00e5ff" stroke-width="12" opacity="0.9"/>
+    <ellipse cx="452" cy="388" rx="118" ry="34" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.25"/>
+    <path d="M340 382 L562 376 L568 540 L334 540 Z" fill="#eaf6ff" opacity="0.14"/>
+    <path d="M344 386 C 400 470, 500 470, 560 380" stroke="#9fd8ff" stroke-width="3" fill="none" opacity="0.5"/>
+  </g>
+
+  <g fill="#00e5ff" opacity="0.8">
+    <circle cx="180" cy="150" r="7"/>
+    <circle cx="990" cy="120" r="5"/>
+    <circle cx="1050" cy="470" r="8"/>
+    <circle cx="150" cy="470" r="5"/>
+    <circle cx="900" cy="90" r="4"/>
+    <circle cx="240" cy="260" r="4"/>
+  </g>
+  <g fill="#ff7a18" opacity="0.7">
+    <circle cx="760" cy="140" r="5"/>
+    <circle cx="60" cy="300" r="6"/>
+    <circle cx="1140" cy="300" r="6"/>
+    <circle cx="340" cy="90" r="4"/>
+    <circle cx="980" cy="560" r="5"/>
+  </g>
+
+  <g>
+    <rect x="430" y="500" width="340" height="60" rx="30" fill="rgba(10,13,22,0.72)" stroke="rgba(255,255,255,0.16)"/>
+    <text x="600" y="538" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" letter-spacing="6" fill="#ffffff">ONLINE HOOPS</text>
+  </g>
+</svg>
