@@ -1,0 +1,17 @@
+{
+  "name": "blog-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Daily 5-post SEO blog automation for Basketball Arena",
+  "main": "server.js",
+  "scripts": {
+    "generate": "node src/cli.js",
+    "test": "node --test",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "rss-parser": "^3.13.0"
+  }
+}
