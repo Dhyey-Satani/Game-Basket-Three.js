@@ -1,0 +1,67 @@
+name: Daily Blog Generation
+
+on:
+  schedule:
+    # 06:00 UTC daily == 11:30 IST (cron runs in UTC by default)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: blog-generation
+  cancel-in-progress: false   # queue, never cancel -> serializes cron vs manual runs
+
+permissions:
+  contents: write
+
+jobs:
+  generate-and-post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: blog-automation/package-lock.json
+
+      - name: Generate posts
+        env:
+          OPENROUTER_API_KEY_1: ${{ secrets.OPENROUTER_API_KEY_1 }}
+          OPENROUTER_API_KEY_2: ${{ secrets.OPENROUTER_API_KEY_2 }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          cd blog-automation
+          npm ci
+          node src/cli.js --ci
+
+      - name: Commit & push (if changes)
+        run: |
+          git config user.name "blog-bot"
+          git config user.email "blog-bot@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "feat(blog): daily automated posts $(date -u +%F)"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Trigger Pages deploy
+        run: gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  notify-failure:
+    needs: generate-and-post
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify failure
+        run: |
+          curl -fsS -X POST "${{ secrets.NOTIFY_WEBHOOK_URL }}" \
+            -H 'Content-Type: application/json' \
+            -d "{\"content\":\"Daily blog automation FAILED on $(date -u +%F). See $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" \
+            || true
