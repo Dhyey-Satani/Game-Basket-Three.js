@@ -2,49 +2,79 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://dhyey.bond/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://dhyey.bond/blog/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://dhyey.bond/blog/how-to-improve-basketball-shooting/</loc>
-    <lastmod>2026-08-14</lastmod>
+    <loc>https://dhyey.bond/blog/jacob-degrom-reaches-2-000-strikeouts-in-rangers-win/</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dhyey.bond/blog/1v1-basketball-strategies/</loc>
-    <lastmod>2026-08-15</lastmod>
+    <loc>https://dhyey.bond/blog/baseball-workout-routines-for-stronger-faster-players/</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dhyey.bond/blog/online-basketball-guide/</loc>
-    <lastmod>2026-08-10</lastmod>
+    <loc>https://dhyey.bond/blog/yekindar-transfer-news-player-unsure-of-his-options/</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dhyey.bond/blog/how-to-go-pro-in-esports-a-practical-career-guide/</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dhyey.bond/blog/el-nino-warming-could-be-strongest-in-living-memory/</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://dhyey.bond/blog/basketball-dribbling-tips/</loc>
-    <lastmod>2026-08-16</lastmod>
+    <lastmod>2026-08-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dhyey.bond/blog/how-to-improve-basketball-score/</loc>
-    <lastmod>2026-08-08</lastmod>
+    <loc>https://dhyey.bond/blog/1v1-basketball-strategies/</loc>
+    <lastmod>2026-08-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://dhyey.bond/blog/basketball-tips-for-beginners/</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dhyey.bond/blog/how-to-improve-basketball-shooting/</loc>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dhyey.bond/blog/online-basketball-guide/</loc>
+    <lastmod>2026-07-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dhyey.bond/blog/how-to-improve-basketball-score/</loc>
+    <lastmod>2026-07-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
