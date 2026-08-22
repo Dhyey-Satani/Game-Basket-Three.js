@@ -66,7 +66,8 @@ async function runPipeline(cfg, { apiKeys, pexelsKey, log = () => {} } = {}) {
       }
       if (slot.type === 'evergreen') {
         const pool = cfg.EVERGREEN_TOPICS[slot.category] || ['general guide'];
-        slot.topic = pool[doy % pool.length];
+        const usedCount = posts.filter((p) => p.badge === slot.badge).length;
+        slot.topic = pool[(doy + usedCount) % pool.length];
       }
       const related = posts
         .filter((p) => p.badge === slot.badge)
