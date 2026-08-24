@@ -11,7 +11,7 @@ const article = require('./article');
 const updater = require('./index-updater');
 
 function todayIso() {
-  return new Date().toISOString().slice(0, 10);
+return new Date().toISOString().slice(0, 10);
 }
 
 function buildExcerpt(contentData) {
@@ -23,11 +23,6 @@ function buildExcerpt(contentData) {
   return words.length > 28 ? `${excerpt}...` : excerpt;
 }
 
-function dayOfYear() {
-  const now = new Date();
-  const start = Date.UTC(now.getUTCFullYear(), 0, 0);
-  return Math.floor((now.getTime() - start) / 86400000);
-}
 
 async function runPipeline(cfg, { apiKeys, pexelsKey, log = () => {} } = {}) {
   const st = state.loadState(cfg);
@@ -36,48 +31,58 @@ async function runPipeline(cfg, { apiKeys, pexelsKey, log = () => {} } = {}) {
   const generated = [];
   const failures = [];
   const headlines = new Map();
-  const doy = dayOfYear();
 
-  let model;
+  let modelCandidates;
   try {
-    model = await models.pickBestModel(apiKeys, cfg);
-    log(`Model: ${model.id} (score=${model.score == null ? 'n/a' : model.score.toFixed(3)}, cost/1k=$${model.costPer1k ?? 0})`);
+   modelCandidates = await models.getModelCandidates(apiKeys, cfg, cfg.MODEL_CANDIDATES || 3);
+    log(`Models: ${modelCandidates.map((m) => m.id).join(', ')}`);
   } catch (err) {
-    model = { id: cfg.FALLBACK_MODELS[0], name: cfg.FALLBACK_MODELS[0], context_length: null };
-    log(`Model discovery failed (${err.message}); using fallback ${model.id}`);
+    modelCandidates = cfg.FALLBACK_MODELS.map((id) => ({ id, name: id, context_length: null, source: 'fallback' }));
+    log(`Model discovery failed (${err.message}); using fallback list`);
   }
 
   for (const baseSlot of cfg.SLOTS) {
     const slot = { ...baseSlot };
-    try {
-      let headline = null;
-      if (slot.type === 'news') {
-        if (!headlines.has(slot.category)) {
-          const res = await rss.fetchRss(cfg, slot.category);
-          headlines.set(slot.category, res.headlines);
+  let slotSuccess = false;
+    let lastErr = null;
+    for (let mi = 0; mi < modelCandidates.length; mi++) {
+      const model = modelCandidates[mi];
+      try {
+        let headline = null;
+        if (slot.type === 'news') {
+          if (!headlines.has(slot.category)) {
+            const res = await rss.fetchRss(cfg, slot.category);
+            headlines.set(slot.category, res.headlines);
+          }
+          const fresh = headlines.get(slot.category).filter((h) => !state.isHeadlineCovered(st, h.title, cfg));
+          if (!fresh.length) {
+            log(`No fresh headlines for ${slot.id}; falling back to evergreen`);
+            slot.type = 'evergreen';
+          } else {
+            headline = fresh[0];
+          }
         }
-        const fresh = headlines.get(slot.category).filter((h) => !state.isHeadlineCovered(st, h.title, cfg));
-        if (!fresh.length) {
-          log(`No fresh headlines for ${slot.id}; falling back to evergreen`);
-          slot.type = 'evergreen';
-        } else {
-          headline = fresh[0];
+         if (slot.type === 'evergreen') {
+          const pool = cfg.EVERGREEN_TOPICS[slot.category] || ['general guide'];
+          const usedCount = posts.filter((p) => p.badge === slot.badge).length;
+          slot.topic = pool[usedCount % pool.length];
         }
-      }
-      if (slot.type === 'evergreen') {
-        const pool = cfg.EVERGREEN_TOPICS[slot.category] || ['general guide'];
-        const usedCount = posts.filter((p) => p.badge === slot.badge).length;
-        slot.topic = pool[(doy + usedCount) % pool.length];
-      }
-      const related = posts
-        .filter((p) => p.badge === slot.badge)
-        .sort((a, b) => b.datePublished.localeCompare(a.datePublished))[0] || posts[0] || null;
-      const data = await content.generatePost({ slot, headline, cfg, apiKeys, model, related, chat: content.chatCompletion });
-      const slug = article.slugify(data.title);
-      if (existingSlugs.has(slug) || state.isSlugUsed(st, slug) || generated.some((g) => g.slug === slug)) {
-        log(`Slug "${slug}" already used; skipping`);
-        continue;
-      }
+        const related = posts
+          .filter((p) => p.badge === slot.badge)
+          .sort((a, b) => b.datePublished.localeCompare(a.datePublished))[0] || posts[0] || null;
+        const data = await content.generatePost({ slot, headline, cfg, apiKeys, model, related, chat: content.chatCompletion });
+        const slug = article.slugify(data.title);
+        if (!slug) {
+          log(`Empty slug from AI title for ${slot.id}; skipping`);
+          slotSuccess = true;
+          break;
+        }
+        if (existingSlugs.has(slug) || state.isSlugUsed(st, slug) || generated.some((g) => g.slug === slug)) {
+          log(`Slug "${slug}" already used; skipping`);
+          slotSuccess = true;
+          break;
+        }
+      
       const datePublished = todayIso();
       const words = [
         data.intro,
@@ -108,9 +113,18 @@ async function runPipeline(cfg, { apiKeys, pexelsKey, log = () => {} } = {}) {
       fs.writeFileSync(path.join(dir, 'index.html'), html);
       generated.push(post);
       log(`Generated ${slug} (${slot.badge})`);
-    } catch (err) {
-      failures.push({ slot: slot.id, error: err.message });
-      log(`FAILED ${slot.id}: ${err.message}`);
+   slotSuccess = true;
+      break;
+      } catch (err) {
+        lastErr = err;
+        if (mi < modelCandidates.length - 1) {
+          log(`Model ${model.id} failed for ${slot.id}: ${err.message}; trying next model`);
+        }
+      }
+    }
+    if (!slotSuccess) {
+      failures.push({ slot: slot.id, error: lastErr ? lastErr.message : 'no model succeeded' });
+      log(`FAILED ${slot.id}: ${lastErr ? lastErr.message : 'no model succeeded'}`);
     }
   }
 
@@ -131,7 +145,7 @@ async function runPipeline(cfg, { apiKeys, pexelsKey, log = () => {} } = {}) {
   updater.updateBlogIndex(cfg, allPosts);
   updater.updateSitemap(cfg, allPosts);
   log(`Updated blog index + sitemap with ${allPosts.length} posts`);
-  return { generated, failures, model };
+  return { generated, failures, model: modelCandidates[0] };
 }
 
 module.exports = { runPipeline, buildExcerpt, todayIso };

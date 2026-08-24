@@ -60,16 +60,47 @@ function scoreModel(m, popularMap, cfg, nowMs = Date.now()) {
   return recency * 0.3 + popularity * 0.1 + brand * 0.35 + context * 0.15 + price * 0.2;
 }
 
-async function pickBestModel(keys, cfg) {
-  const { v1Models, popularMap } = await fetchModels(keys, cfg);
-  const candidates = filterCandidates(v1Models, cfg);
-  if (!candidates.length) {
-    return { id: cfg.FALLBACK_MODELS[0], name: cfg.FALLBACK_MODELS[0], context_length: null };
-  }
-  let best = candidates[0];
+function isFreeModel(m) {
+  const id = String(m.id || '');
+  if (id.includes(':free')) return true;
+  const p = m.pricing || {};
+  return String(p.prompt) === '0' && String(p.completion) === '0';
+}
+ 
+const FREE_EXCLUDE_NAME = /(image|vision|audio|video|whisper|tts|dall.e|flux|midjourney|stable.diffusion|sora|lyria|code|safety|stealth|dots|inkling|poolside|lfm|nano|nemotron|liquid|reasoning)/i;
+ 
+function filterFreeCandidates(models, cfg) {
+  return models.filter((m) => {
+    if (!isFreeModel(m)) return false;
+    const name = (m.name || '').toLowerCase();
+    const id = String(m.id || '').toLowerCase();
+    if (FREE_EXCLUDE_NAME.test(name) || FREE_EXCLUDE_NAME.test(id)) return false;
+    if (/^openrouter\/(auto|free)(?:-|$)/.test(id)) return false;
+    if (id.includes(':batch')) return false;
+    if (m.context_length && m.context_length < cfg.MIN_CONTEXT_LENGTH) return false;
+    const prov = m.top_provider || {};
+    if (prov.max_completion_tokens && prov.max_completion_tokens < cfg.MAX_OUTPUT_TOKENS) return false;
+    return true;
+  });
+}
+ 
+function scoreFreeModel(m, cfg, nowMs = Date.now()) {
+  const context = Math.min(1, (m.context_length || 0) / 1000000);
+  const brand = (cfg.PREFERRED_FREE_PREFIXES || []).some((p) => String(m.id || '').startsWith(p)) ? 1 : 0;
+  const created = m.created ? Number(m.created) : 0;
+  const daysOld = created ? (nowMs - created * 1000) / 86400000 : 3650;
+  const recency = Math.max(0, Math.min(1, 1 - Math.max(0, daysOld) / 730));
+  return brand * 0.7 + context * 0.25 + recency * 0.05;
+}
+ 
+async function pickFreeModel(keys, cfg) {
+  const { v1Models } = await fetchModels(keys, cfg);
+  const candidates = filterFreeCandidates(v1Models, cfg);
+  if (!candidates.length) return null;
+  let best = null;
   let bestScore = -1;
   for (const m of candidates) {
-    const s = scoreModel(m, popularMap, cfg);
+    const s = scoreFreeModel(m, cfg);
     if (s > bestScore) {
       bestScore = s;
       best = m;
@@ -80,8 +111,62 @@ async function pickBestModel(keys, cfg) {
     name: best.name,
     context_length: best.context_length || null,
     score: bestScore,
-    costPer1k: pricePer1k(best),
+    costPer1k: 0,
+    source: 'free',
   };
 }
+ 
+async function getModelCandidates(keys, cfg, limit = 3) {
+  const { v1Models } = await fetchModels(keys, cfg);
+  const free = filterFreeCandidates(v1Models, cfg)
+    .sort((a, b) => scoreFreeModel(b, cfg) - scoreFreeModel(a, cfg));
+  const picks = free.slice(0, limit).map((m) => ({
+    id: m.id,
+    name: m.name,
+    context_length: m.context_length || null,
+    score: scoreFreeModel(m, cfg),
+    costPer1k: 0,
+    source: 'free',
+  }));
+  if (picks.length) return picks;
+  const candidates = filterCandidates(v1Models, cfg);
+  if (!candidates.length) {
+    return cfg.FALLBACK_MODELS.map((id) => ({ id, name: id, context_length: null, source: 'fallback' }));
+  }
+  let best = candidates[0];
+  let bestScore = -1;
+  for (const m of candidates) {
+    const s = scoreModel(m, new Map(), cfg);
+    if (s > bestScore) {
+      bestScore = s;
+      best = m;
+    }
+  }
+  return [{
 
-module.exports = { pricePer1k, fetchModels, filterCandidates, scoreModel, pickBestModel };
+    id: best.id,
+    name: best.name,
+    context_length: best.context_length || null,
+    score: bestScore,
+    costPer1k: pricePer1k(best),
+   source: 'paid',
+  }];
+}
+ 
+async function pickBestModel(keys, cfg) {
+  const list = await getModelCandidates(keys, cfg, 1);
+  return list[0];
+}
+
+module.exports = {
+  pricePer1k,
+  fetchModels,
+  filterCandidates,
+  scoreModel,
+  isFreeModel,
+  filterFreeCandidates,
+  scoreFreeModel,
+  pickFreeModel,
+  getModelCandidates,
+  pickBestModel,
+};

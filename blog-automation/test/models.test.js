@@ -93,6 +93,61 @@ test('pickBestModel falls back when no candidates', async () => {
   try {
     const best = await models.pickBestModel(['sk-test'], cfg);
     assert.strictEqual(best.id, cfg.FALLBACK_MODELS[0]);
+     assert.strictEqual(best.source, 'fallback');
+  } finally {
+    mock.restoreAll();
+  }
+});
+ 
+test('filterFreeCandidates keeps free text models only', () => {
+  const free = makeModel({ id: 'org/ok:free' });
+  const paid = makeModel({ id: 'org/paid', pricing: { prompt: '0.001', completion: '0.001' } });
+  const code = makeModel({ id: 'org/code:free', name: 'Code Model' });
+  const audio = makeModel({ id: 'org/audio:free', name: 'Lyria Audio' });
+  const router = makeModel({ id: 'openrouter/free', name: 'Free Auto Router' });
+  const out = models.filterFreeCandidates([free, paid, code, audio, router], cfg);
+  assert.deepStrictEqual(out.map((m) => m.id), ['org/ok:free']);
+});
+ 
+test('scoreFreeModel rewards larger context', () => {
+  const small = makeModel({ id: 'a', context_length: 32000 });
+  const large = makeModel({ id: 'b', context_length: 1000000 });
+  assert.ok(models.scoreFreeModel(large, cfg) > models.scoreFreeModel(small, cfg));
+});
+ 
+test('pickFreeModel picks largest-context free model', async () => {
+  mock.method(globalThis, 'fetch', async () => ({
+    ok: true,
+    json: async () => ({
+      data: [
+        makeModel({ id: 'org/small:free', context_length: 40000 }),
+        makeModel({ id: 'org/large:free', context_length: 900000 }),
+      ],
+    }),
+  }));
+  try {
+    const best = await models.pickFreeModel(['sk-test'], cfg);
+    assert.strictEqual(best.id, 'org/large:free');
+    assert.strictEqual(best.source, 'free');
+  } finally {
+    mock.restoreAll();
+  }
+});
+ 
+test('pickBestModel prefers a free model when available', async () => {
+  mock.method(globalThis, 'fetch', async () => ({
+    ok: true,
+    json: async () => ({
+      data: [
+        makeModel({ id: 'org/free:free', context_length: 900000 }),
+        makeModel({ id: 'org/paid', pricing: { prompt: '0.001', completion: '0.001' }, context_length: 1000000 }),
+      ],
+    }),
+  }));
+  try {
+    const best = await models.pickBestModel(['sk-test'], cfg);
+    assert.strictEqual(best.id, 'org/free:free');
+    assert.strictEqual(best.source, 'free');
   } finally {
     mock.restoreAll();
   }

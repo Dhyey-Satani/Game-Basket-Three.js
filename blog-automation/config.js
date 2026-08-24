@@ -27,14 +27,23 @@ module.exports = {
   MODEL_TEMPERATURE: 0.7,
 
   FALLBACK_MODELS: [
-    'openai/gpt-4o-mini',
-    'google/gemini-3.7-flash',
-    'meta-llama/llama-3.3-70b-instruct',
+'arcee-ai/trinity-large-preview:free',
+    'meta-llama/llama-3.3-70b-instruct:free',
+    'google/gemma-3-27b-it:free',
+    'deepseek/deepseek-r1:free',
+    'mistralai/mistral-7b-instruct:free',
+    'microsoft/phi-3-mini-128k-instruct:free',
+    'nousresearch/hermes-3-llama-3.1-405b:free',
   ],
 
   PREFERRED_PREFIXES: [
     'openai/', 'anthropic/', 'google/', 'meta-llama/', 'deepseek/', 'qwen/',
     'mistralai/', 'x-ai/', 'z-ai/', 'moonshotai/', 'nvidia/', 'allenai/', 'cohere/',
+  ],
+
+   PREFERRED_FREE_PREFIXES: [
+    'google/gemma', 'z-ai/glm', 'qwen/', 'deepseek/', 'meta-llama/', 'mistralai/',
+    'moonshotai/', 'openai/', 'arcee-ai/', 'nousresearch/', 'microsoft/',
   ],
 
   RSS_FEEDS: {

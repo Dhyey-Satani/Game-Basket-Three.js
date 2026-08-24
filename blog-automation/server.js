@@ -36,13 +36,18 @@ app.get('/api/models', async (req, res) => {
   const apiKeys = keys();
   if (!apiKeys.length) return res.status(400).json({ error: 'OpenRouter API key not configured.' });
   try {
-    const { fetchModels, filterCandidates, scoreModel } = require('./src/models');
-    const { v1Models, popularMap } = await fetchModels(apiKeys, cfg);
-    const ranked = filterCandidates(v1Models, cfg)
-      .sort((a, b) => scoreModel(b, popularMap, cfg) - scoreModel(a, popularMap, cfg))
-      .slice(0, 10)
-      .map((m) => ({ id: m.id, name: m.name, score: scoreModel(m, popularMap, cfg) }));
-    res.json({ models: ranked });
+   const models = require('./src/models');
+    const { v1Models } = await models.fetchModels(apiKeys, cfg);
+    const free = models.filterFreeCandidates(v1Models, cfg)
+      .sort((a, b) => models.scoreFreeModel(b, cfg) - models.scoreFreeModel(a, cfg))
+      .slice(0, 30)
+      .map((m) => ({ id: m.id, name: m.name, contextLength: m.context_length || null, isFree: true }));
+    const selected = await models.pickBestModel(apiKeys, cfg);
+    res.json({
+      source: 'openrouter-v1',
+      free,
+      selected: { id: selected.id, name: selected.name, contextLength: selected.context_length, source: selected.source },
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

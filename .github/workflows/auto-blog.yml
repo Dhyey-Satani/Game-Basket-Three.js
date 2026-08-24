@@ -49,10 +49,6 @@ jobs:
             echo "No changes to commit"
           fi
 
-      - name: Trigger Pages deploy
-        run: gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY"
-        env:
-          GH_TOKEN: ${{ github.token }}
 
   notify-failure:
     needs: generate-and-post

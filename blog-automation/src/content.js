@@ -58,8 +58,10 @@ function parseContentResponse(raw) {
     if (!data[k] || (Array.isArray(data[k]) && !data[k].length)) throw new Error(`AI content missing "${k}"`);
   }
   if (!Array.isArray(data.sections) || !data.sections.length) throw new Error('AI content has no sections');
+   const title = String(data.title).trim();
+  if (!/[a-z0-9]/i.test(title)) throw new Error('AI title has no usable characters');
   return {
-    title: String(data.title).trim(),
+        title,
     metaDescription: String(data.metaDescription).trim(),
     keywords: Array.isArray(data.keywords) ? data.keywords.map(String) : [],
     imageQuery: String(data.imageQuery || data.title).trim(),

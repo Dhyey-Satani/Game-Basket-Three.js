@@ -54,9 +54,8 @@ test('runPipeline generates posts and commits partial successes', async () => {
   let calls = 0;
   realRss.fetchRss = async (c, cat) => ({ source: 'https://x', headlines: [{ title: `Headline ${cat} ${calls++}`, link: 'https://x', pubDate: '2026-08-18T00:00:00Z' }] });
   const realModels = require('../src/models');
-  const originalPick = realModels.pickBestModel;
-  realModels.pickBestModel = async () => ({ id: 'best', name: 'Best', context_length: 100000, score: 1, costPer1k: 0 });
-
+ const originalGet = realModels.getModelCandidates;
+  realModels.getModelCandidates = async () => [{ id: 'best', name: 'Best', context_length: 100000, score: 1, costPer1k: 0, source: 'free' }];
   let chatCalls = 0;
   const originalChat = require('../src/content').chatCompletion;
   require('../src/content').chatCompletion = async () => {
@@ -104,7 +103,7 @@ test('runPipeline generates posts and commits partial successes', async () => {
     assert.ok(st.recentSlugs.length === 4);
   } finally {
     realRss.fetchRss = originalFetchRss;
-    realModels.pickBestModel = originalPick;
+    realModels.getModelCandidates = originalGet;
     require('../src/content').chatCompletion = originalChat;
     realImages.findHeroImage = originalFind;
   }
