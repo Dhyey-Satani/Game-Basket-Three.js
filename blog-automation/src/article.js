@@ -87,6 +87,7 @@ function renderArticleHtml(post, cfg) {
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0a0d16">
   <meta name="application-name" content="Basketball Arena Blog">
+  <meta name="google-adsense-account" content="ca-pub-8299931428025698">
 
   <title>${escapeHtml(post.title)} | Basketball Arena</title>
 
@@ -260,6 +261,9 @@ ${related}
           <ul>
             <li><a href="/">Play Now</a></li>
             <li><a href="/blog/">Blog</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/privacy-policy.html">Privacy Policy</a></li>
           </ul>
         </div>
       </div>

@@ -12,6 +12,7 @@
   <meta name="theme-color" content="#0a0d16">
   <meta name="application-name" content="Basketball Arena">
   <meta name="referrer" content="origin">
+  <meta name="google-adsense-account" content="ca-pub-8299931428025698">
 
   <title>Basketball Arena - Free 3D Arcade Basketball Game Online</title>
 
@@ -98,49 +99,17 @@
 
   <link rel="stylesheet" href="./style.css">
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZTCPT8X46X"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZTCPT8X46X"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-  gtag('config', 'G-ZTCPT8X46X');
-</script>
+    gtag('config', 'G-ZTCPT8X46X');
+  </script>
+  <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8299931428025698"
      crossorigin="anonymous"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8299931428025698"
-     crossorigin="anonymous"></script>
-<!-- test -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-8299931428025698"
-     data-ad-slot="5898424973"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8299931428025698"
-     crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block; text-align:center;"
-     data-ad-layout="in-article"
-     data-ad-format="fluid"
-     data-ad-client="ca-pub-8299931428025698"
-     data-ad-slot="5860514499"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8299931428025698"
-     crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="autorelaxed"
-     data-ad-client="ca-pub-8299931428025698"
-     data-ad-slot="3775804453"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
 </head>
 
 <body>
@@ -263,7 +232,15 @@
       <div class="btn-row">
         <button type="button" id="btn-open-settings" class="btn ghost">SETTINGS</button>
         <button type="button" id="btn-view-leaderboard" class="btn ghost">LEADERBOARD</button>
+        <button type="button" id="btn-open-howto" class="btn ghost">HOW TO PLAY</button>
         <a href="/blog/" class="btn ghost">BLOG</a>
+      </div>
+      <div class="menu-site-links">
+        <a href="/about.html">About</a>
+        <span class="sep" aria-hidden="true">&middot;</span>
+        <a href="/contact.html">Contact</a>
+        <span class="sep" aria-hidden="true">&middot;</span>
+        <a href="/privacy-policy.html">Privacy Policy</a>
       </div>
       <div id="menu-best" class="menu-best"></div>
     </div>
@@ -301,6 +278,27 @@
       </div>
       <div class="btn-row">
         <button type="button" id="btn-close-settings" class="btn cyan">DONE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW TO PLAY -->
+  <div id="overlay-howto" class="overlay hidden">
+    <div class="panel howto-panel" role="dialog" aria-modal="true" aria-labelledby="howto-title">
+      <h2 id="howto-title" class="game-title title-ml"><span class="t2">HOW TO PLAY</span></h2>
+      <div class="howto-body">
+        <ol class="howto-steps">
+          <li><strong>Pick a mode</strong> - choose from Arcade, Time Attack, Moving Hoop, Trick Shot, Challenge, Hard Mode or Practice on the main menu.</li>
+          <li><strong>Aim with the mouse or touch</strong> - move your cursor or finger over the ball to drag it down and back. An aiming guide shows your trajectory and power.</li>
+          <li><strong>Shoot</strong> - drag the ball back and release to launch it at the hoop. Pull further back for more power.</li>
+          <li><strong>Orbit the camera</strong> - click, hold and drag on empty space (or use two fingers on mobile) to rotate the camera around the court and line up the perfect angle.</li>
+          <li><strong>Score combos</strong> - sink baskets in a row to build your combo multiplier and trigger Fire Mode for a 5x score boost.</li>
+          <li><strong>Chase the leaderboard</strong> - beat your high score and climb the global rankings.</li>
+        </ol>
+        <p class="howto-tip">Tip: aim for the centre of the rim for a PERFECT swish, and bank shots off the backboard in Trick Shot mode. Use <strong>P</strong> to pause and <strong>R</strong> to restart during a game.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" id="btn-close-howto" class="btn cyan">GOT IT</button>
       </div>
     </div>
   </div>
@@ -360,12 +358,35 @@
     <div id="countdown-num">3</div>
   </div>
 
+  <!-- Ad unit (below the game) -->
+  <div class="ad-slot">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-8299931428025698"
+         data-ad-slot="5898424973"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
   <!-- SEO content footer -->
   <footer id="seo-footer">
     <div class="seo-inner">
       <div class="seo-col">
         <h2>Play Basketball Arena Online - Free 3D Basketball Game</h2>
         <p>Basketball Arena is a free 3D arcade basketball shooting game that runs directly in your web browser - no download, no install, no sign-up required. Drag the ball to set your shot, release to shoot, and use the orbit camera to line up the perfect angle. Score baskets to build combos, trigger Fire Mode for a 5x score multiplier, and chase the global leaderboard.</p>
+      </div>
+      <div class="seo-col">
+        <h2>How to Play</h2>
+        <ol>
+          <li>Pick a game mode from the main menu.</li>
+          <li>Drag the ball down and back to aim - an aiming guide shows your trajectory and power.</li>
+          <li>Release to shoot at the hoop.</li>
+          <li>Drag on empty space to orbit the camera and find the best angle.</li>
+          <li>Sink baskets in a row to build combos and trigger Fire Mode for a 5x multiplier.</li>
+        </ol>
       </div>
       <div class="seo-col">
         <h2>Game Modes</h2>
@@ -375,11 +396,34 @@
         <h2>Features &amp; Tips</h2>
         <p>Realistic physics powered by Cannon.js with 3D graphics from Three.js. Unlock basketball skins, customise sound effects, background music and bloom effects. Aim for the center of the rim for a PERFECT swish, bank shots off the backboard, and sink long-range shots to build your best streak.</p>
       </div>
+      <div class="seo-col">
+        <h2>Site Links</h2>
+        <ul>
+          <li><a href="/">Play Now</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+          <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
     </div>
     <div class="seo-bottom">
       <p>Basketball Arena - free online basketball game. Play basketball, arcade hoops, trick shots and more. &copy; 2026 Dhyey Satani</p>
     </div>
   </footer>
+
+  <!-- Ad unit (page footer) -->
+  <div class="ad-slot">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-8299931428025698"
+         data-ad-slot="5898424973"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
 
   <script src="./vendor/three.min.js"></script>
   <script src="./vendor/OrbitControls.js"></script>

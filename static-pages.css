@@ -1,0 +1,180 @@
+/* ============================================================
+   Static pages (About, Contact, Privacy Policy)
+   ============================================================ */
+
+.static-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: var(--space-6) 0 var(--space-7);
+}
+
+.static-header {
+  padding: var(--space-6) 0 var(--space-5);
+  border-bottom: 1px solid var(--c-panel-line);
+}
+
+.static-header h1 {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: var(--c-text);
+}
+
+.static-lede {
+  margin: 0;
+  max-width: 640px;
+  color: var(--c-dim);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.static-section {
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.static-section:last-child {
+  border-bottom: none;
+}
+
+.static-section h2 {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--c-text);
+}
+
+.static-section p,
+.static-section li {
+  color: var(--c-body, #cbd5e1);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.static-section p {
+  margin: 0 0 var(--space-3);
+}
+
+.static-section p:last-child {
+  margin-bottom: 0;
+}
+
+.static-section ul,
+.static-section ol {
+  margin: 0 0 var(--space-3);
+  padding-left: var(--space-5);
+}
+
+.static-section ul {
+  list-style: disc;
+}
+
+.static-section a {
+  color: var(--c-cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.static-section a:hover {
+  color: var(--c-orange);
+}
+
+.static-section code {
+  background: rgba(0, 229, 255, 0.12);
+  color: var(--c-cyan);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* CTA */
+.static-cta {
+  max-width: 860px;
+  margin: 0 auto var(--space-8);
+  padding: var(--space-7) var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--c-panel-line);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 122, 24, 0.22) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(0, 229, 255, 0.16) 0%, transparent 45%),
+    var(--c-panel);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.static-cta h2 {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--c-text);
+}
+
+.static-cta p {
+  margin: 0 auto var(--space-6);
+  max-width: 460px;
+  color: var(--c-dim);
+  font-size: 15px;
+}
+
+/* Contact form */
+.contact-form {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  max-width: 640px;
+}
+
+.form-field {
+  display: grid;
+  gap: 6px;
+}
+
+.form-field label {
+  font-size: var(--fs-sm, 12px);
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--c-dim);
+  text-transform: uppercase;
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--c-panel-line);
+  background: var(--c-panel);
+  color: var(--c-text);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--c-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-status {
+  min-height: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-status.error {
+  color: #ff6b6b;
+}
+
+.form-status.success {
+  color: #4ade80;
+}

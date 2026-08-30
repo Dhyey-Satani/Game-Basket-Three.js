@@ -2551,6 +2551,18 @@ function bindUI() {
     document.getElementById("menu-best").textContent = "BEST: 0";
   });
 
+  // How to Play
+  $("btn-open-howto").addEventListener("click", () => {
+    AudioSys.click();
+    openOverlay("overlay-howto", $("btn-close-howto"));
+  });
+  $("btn-close-howto").addEventListener("click", () => {
+    AudioSys.click();
+    $("overlay-howto").classList.add("hidden");
+    showMenuScreens(false);
+    restoreFocus();
+  });
+
   // Toggles
   $("set-sfx").addEventListener("change", (e) => { settings.sfxOn = e.target.checked; AudioSys.applyGains(); saveSettings(); });
   $("set-music").addEventListener("change", (e) => {
@@ -2574,12 +2586,17 @@ function bindUI() {
   window.addEventListener("keydown", (e) => {
     const settingsOpen = !$("overlay-settings").classList.contains("hidden");
     const lbOpen = !$("overlay-leaderboard").classList.contains("hidden");
+    const howtoOpen = !$("overlay-howto").classList.contains("hidden");
     const k = e.key;
     if (k === "Escape" || k === "p" || k === "P") {
       if (settingsOpen) {
         closeSettings();
       } else if (lbOpen) {
         $("overlay-leaderboard").classList.add("hidden");
+        showMenuScreens(false);
+        restoreFocus();
+      } else if (howtoOpen) {
+        $("overlay-howto").classList.add("hidden");
         showMenuScreens(false);
         restoreFocus();
       } else if (state.screen === "playing") {

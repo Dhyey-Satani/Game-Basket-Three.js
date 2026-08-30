@@ -775,10 +775,92 @@ canvas {
   letter-spacing: 1px;
 }
 
+/* Menu site links */
+.menu-site-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--space-3);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.menu-site-links a {
+  color: var(--c-dim);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.menu-site-links a:hover,
+.menu-site-links a:focus-visible {
+  color: var(--c-orange);
+}
+
+.menu-site-links .sep {
+  color: var(--c-dim);
+  opacity: 0.6;
+}
+
 /* Settings body */
 .settings-body {
   text-align: left;
   margin-top: var(--space-4);
+}
+
+/* How to play */
+.howto-body {
+  text-align: left;
+  margin-top: var(--space-4);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.howto-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: howto;
+}
+
+.howto-steps li {
+  position: relative;
+  padding: 0 0 14px 44px;
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+  color: var(--c-text);
+  counter-increment: howto;
+}
+
+.howto-steps li::before {
+  content: counter(howto);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--c-orange);
+  color: #0a0d16;
+  font-weight: 800;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.howto-steps strong {
+  color: var(--c-orange);
+}
+
+.howto-tip {
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--c-dim);
+  border-left: 3px solid var(--c-orange);
+  padding-left: 12px;
 }
 
 /* Leaderboard */
@@ -1165,6 +1247,14 @@ canvas {
   text-align: center;
   font-size: var(--fs-xs);
   color: var(--c-dim);
+}
+
+/* Ad slots (present in DOM for AdSense; the fullscreen game overlays them) */
+.ad-slot {
+  position: relative;
+  z-index: 1;
+  min-height: 50px;
+  text-align: center;
 }
 
 /* ============================================================

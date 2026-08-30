@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact Basketball Arena. Questions, feedback or partnership ideas - get in touch with the team behind the free 3D basketball game.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0d16">
+  <meta name="google-adsense-account" content="ca-pub-8299931428025698">
+
+  <title>Contact | Basketball Arena</title>
+
+  <link rel="canonical" href="https://dhyey.bond/contact.html">
+
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Basketball Arena",
+    "url": "https://dhyey.bond/contact.html",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Basketball Arena",
+      "url": "https://dhyey.bond/"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="./blog/css/blog.css">
+  <link rel="stylesheet" href="./static-pages.css">
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="site-logo" href="/" aria-label="Basketball Arena - back to game">
+        <span class="logo-t1">BASKETBALL</span>
+        <span class="logo-t2">ARENA</span>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="/">PLAY NOW</a></li>
+          <li><a href="/blog/">BLOG</a></li>
+          <li><a href="/about.html">ABOUT</a></li>
+          <li><a href="/privacy-policy.html">PRIVACY</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li aria-current="page">Contact</li>
+        </ol>
+      </nav>
+
+      <article class="static-page">
+        <header class="static-header">
+          <h1>Contact Us</h1>
+          <p class="static-lede">Have a question about the game, found a bug, or want to say hi? We would love to hear from you.</p>
+        </header>
+
+        <section class="static-section">
+          <h2>Send a Message</h2>
+          <p>Fill in the form below. Your message will open in your email app addressed to <a href="mailto:contact@dhyey.bond">contact@dhyey.bond</a>, ready to send.</p>
+
+          <form id="contact-form" class="contact-form" novalidate>
+            <div class="form-field">
+              <label for="cf-name">Your Name</label>
+              <input type="text" id="cf-name" name="name" autocomplete="name" required placeholder="Jane Doe">
+            </div>
+            <div class="form-field">
+              <label for="cf-email">Your Email</label>
+              <input type="email" id="cf-email" name="email" autocomplete="email" required placeholder="you@example.com">
+            </div>
+            <div class="form-field">
+              <label for="cf-subject">Subject</label>
+              <input type="text" id="cf-subject" name="subject" required placeholder="Feedback, bug report, partnership...">
+            </div>
+            <div class="form-field">
+              <label for="cf-message">Message</label>
+              <textarea id="cf-message" name="message" rows="6" required placeholder="Write your message here..."></textarea>
+            </div>
+            <button type="submit" class="btn">SEND MESSAGE</button>
+            <p id="cf-status" class="form-status" role="status"></p>
+          </form>
+        </section>
+
+        <section class="static-section">
+          <h2>Other Ways to Reach Us</h2>
+          <ul>
+            <li>Email: <a href="mailto:contact@dhyey.bond">contact@dhyey.bond</a></li>
+            <li>Found a bug or issue with the game? Include your browser name and version if possible.</li>
+            <li>Business and advertising inquiries: please mention "advertising" in the subject line.</li>
+          </ul>
+          <p>We typically reply within 2-3 business days.</p>
+        </section>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="site-logo" href="/" aria-label="Basketball Arena - back to game">
+            <span class="logo-t1">BASKETBALL</span>
+            <span class="logo-t2">ARENA</span>
+          </a>
+          <p>Free 3D arcade basketball game with realistic physics, combos, Fire Mode and global leaderboards. Play instantly in your browser - no download needed.</p>
+        </div>
+        <div class="footer-col">
+          <h2>Site</h2>
+          <ul>
+            <li><a href="/">Play Now</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="footer-copy">&copy; 2026 Dhyey Satani &middot; Basketball Arena</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var form = document.getElementById("contact-form");
+      var status = document.getElementById("cf-status");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var name = document.getElementById("cf-name").value.trim();
+        var email = document.getElementById("cf-email").value.trim();
+        var subject = document.getElementById("cf-subject").value.trim();
+        var message = document.getElementById("cf-message").value.trim();
+        if (!name || !email || !subject || !message) {
+          status.textContent = "Please fill in all fields before sending.";
+          status.className = "form-status error";
+          return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          status.textContent = "Please enter a valid email address.";
+          status.className = "form-status error";
+          return;
+        }
+        var body = encodeURIComponent(message + "\n\nFrom: " + name + " <" + email + ">");
+        var url = "mailto:contact@dhyey.bond?subject=" + encodeURIComponent(subject) + "&body=" + body;
+        window.location.href = url;
+        status.textContent = "Opening your email app... Thank you!";
+        status.className = "form-status success";
+      });
+    })();
+  </script>
+
+</body>
+
+</html>
