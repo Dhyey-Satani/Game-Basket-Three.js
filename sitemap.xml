@@ -2,15 +2,39 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://dhyey.bond/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://dhyey.bond/blog/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dhyey.bond/blog/rays-win-game-4-to-tie-alcs-against-san-francisco-guards/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dhyey.bond/blog/effective-baseball-workout-routines-for-every-player/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dhyey.bond/blog/nip-defeats-mibr-to-claim-stake-pulse-beat-iii-title/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dhyey.bond/blog/uk-health-secretary-vows-to-end-hospital-corridor-care/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://dhyey.bond/blog/alcs-game-4-postponed-new-schedule-for-game-4-and-5/</loc>
